@@ -8,7 +8,9 @@ class ViewBuildingComponent extends Component {
         this.state = {
             id: this.props.match.params.id,
             building: {id : 0, buildingAdress : '', buildingZip : '', emailId: ''},
-            data:[{id : 2, buildingAdress : 'Building adress 1', buildingZip : '22001', emailId: 'emailbld1'}, {id : 3, buildingAdress : 'Building2 adress 2', buildingZip : '22002', emailId :'emailbld2'}]
+            data:[]
+      
+            //data:[{id : 2, buildingAdress : 'Building adress 1', buildingZip : '22001', emailId: 'emailbld1'}, {id : 3, buildingAdress : 'Building2 adress 2', buildingZip : '22002', emailId :'emailbld2'}]
        
         }
         
@@ -22,7 +24,12 @@ class ViewBuildingComponent extends Component {
             this.setState({building: res.data});
         })
         */
-        const editBld=this.state.data.find(obj => obj.id+"" === this.state.id);
+        const { state } = this.props.location;
+        console.log("state");
+        console.log(state);
+   
+        const editBld=state.find(obj => obj.id+"" === this.state.id);
+        //const editBld=this.state.data.find(obj => obj.id+"" === this.state.id);
         console.log(editBld);
         this.setState({building :editBld});
              

@@ -47,7 +47,15 @@ class ListBuildingComponent extends Component {
     }
 
     componentDidMount(){
-        this.setState({ buildings: this.data});
+        
+       console.log ("this.props.location=>"+JSON.stringify(this.props.location))
+       const { state } = this.props.location
+       if (state)   
+       this.setState({ buildings: state});
+       else
+       this.setState({ buildings: this.data});
+       
+       console.log ("state=>"+JSON.stringify(state))
        /*
         BuildingService.getBuildings().then((res) => {
             this.setState({ buildings: res.data});

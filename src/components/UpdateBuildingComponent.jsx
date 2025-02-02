@@ -18,6 +18,7 @@ class UpdateBuildingComponent extends Component {
         this.changeBuildingAdressHandler = this.changeBuildingAdressHandler.bind(this);
         this.changeBuildinZipHandler = this.changeBuildinZipHandler.bind(this);
         this.updateBuilding = this.updateBuilding.bind(this);
+
     }
 
     componentDidMount(){
@@ -50,14 +51,32 @@ class UpdateBuildingComponent extends Component {
 
     updateBuilding = (e) => {
         e.preventDefault();
-        let building = {buildingAdress: this.state.buildingAdress, buildingZip: this.state.buildingZip, emailId: this.state.emailId};
-        console.log('employee => ' + JSON.stringify(building));
+        let updatedBuilding = {buildingAdress: this.state.buildingAdress, buildingZip: this.state.buildingZip, emailId: this.state.emailId};
+        console.log('updatedBuilding => ' + JSON.stringify(updatedBuilding));
         console.log('id => ' + JSON.stringify(this.state.id));
         /*
         BuildingService.updateBuilding(building, this.state.id).then( res => {
             this.props.history.push('/buildings');
         });
         */
+       
+        console.log('before data=>'+ JSON.stringify(this.state.data));
+ 
+        const newData =  this.state.data.map(building =>
+                building.id+"" === this.state.id ? { ...building,
+                    buildingAdress: updatedBuilding.buildingAdress,
+                    buildingZip: updatedBuilding.buildingZip,
+                    emailId : updatedBuilding.emailId
+
+            } : building);
+        this.props.history.push({
+            pathname:'/buildings',
+            state: newData 
+        })
+        ;
+
+        console.log('newData=>'+ JSON.stringify(newData));
+
     }
     
     changeBuildingAdressHandler= (event) => {
@@ -75,6 +94,7 @@ class UpdateBuildingComponent extends Component {
     cancel(){
         this.props.history.push('/buildings');
     }
+
 
     render() {
         return (
