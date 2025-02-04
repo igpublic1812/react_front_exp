@@ -1,0 +1,1 @@
+export const data = [{id : '19219722-8b2f-41ab-ac2e-6258699019f4', buildingAdress : 'Building adress 1', buildingZip : '22001', emailId: 'emailbld1'}, {id : '24d40092-c365-4e0c-b7e2-44f2fd128dba', buildingAdress : 'Building2 adress 2', buildingZip : '22003', emailId :'emailbld2'}] ;

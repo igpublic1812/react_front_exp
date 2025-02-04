@@ -10,11 +10,14 @@ import CreateBuildingComponent from './components/CreateBuildingComponent';
 import UpdateBuildingComponent from './components/UpdateBuildingComponent';
 
 import ViewBuildingComponent from './components/ViewBuildingComponent';
-
+import {data} from './data/data.js'
 function App() {
   const AppBldContext = React.createContext();
-  const data=[{id : 2, buildingAdress : 'Building adress 1', buildingZip : '22001', emailId: 'emailbld1'}, {id : 3, buildingAdress : 'Building2 adress 2', buildingZip : '22002', emailId :'emailbld2'}];
-        
+  const state = {
+                buildings: {data},
+                showConfirmation :false,
+                dltId:''
+            }      
   return (
     <AppBldContext.Provider value={{ data }}>
     <div>
@@ -24,7 +27,9 @@ function App() {
                     <Switch> 
                           <Route path = "/" exact component = {ListBuildingComponent}></Route>
                           <Route path = "/buildings" component = {ListBuildingComponent}></Route>
-                          <Route path = "/add-building/:id" component = {CreateBuildingComponent}></Route>
+                          
+                          <Route path = "/add-building/:id" component = {CreateBuildingComponent} state={state}></Route>
+
                           <Route path = "/view-building/:id" component = {ViewBuildingComponent}></Route>
                           <Route path = "/update-building/:id" component = {UpdateBuildingComponent}></Route> 
                     </Switch>

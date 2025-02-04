@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import BuildingService from '../services/BuildingService'
+import {data} from '../data/data'
 
 class ListBuildingComponent extends Component {
     constructor(props) {
@@ -11,7 +12,8 @@ class ListBuildingComponent extends Component {
         this.addBuilding = this.addBuilding.bind(this);
         this.editBuilding = this.editBuilding.bind(this);
         this.deleteBuilding = this.deleteBuilding.bind(this);
-        this.data=[{id : 2, buildingAdress : 'Building adress 1', buildingZip : '22001', emailId: 'emailbld1'}, {id : 3, buildingAdress : 'Building2 adress 2', buildingZip : '22002', emailId :'emailbld2'}];
+        this.data=(data);
+        //this.data=[{id : 2, buildingAdress : 'Building adress 1', buildingZip : '22001', emailId: 'emailbld1'}, {id : 3, buildingAdress : 'Building2 adress 2', buildingZip : '22002', emailId :'emailbld2'}];
 
     }
 
@@ -47,16 +49,13 @@ class ListBuildingComponent extends Component {
     }
 
     componentDidMount(){
+        this.setState({ buildings: this.data});
+        const { state } = this.props.location;
         
-       console.log ("this.props.location=>"+JSON.stringify(this.props.location))
-       const { state } = this.props.location
-       if (state)   
-       this.setState({ buildings: state});
-       else
-       this.setState({ buildings: this.data});
-       
-       console.log ("state=>"+JSON.stringify(state))
-       /*
+        if (state) {
+        this.setState({ buildings: state});
+        }
+        /*
         BuildingService.getBuildings().then((res) => {
             this.setState({ buildings: res.data});
             console.log(res) ;
@@ -66,7 +65,14 @@ class ListBuildingComponent extends Component {
     }
 
     addBuilding(){
-        this.props.history.push('/add-building/_add');
+        //this.props.history.push('/add-building/_add');
+        this.props.history.push(
+            { pathname:'/add-building/_add',
+            state: this.data
+            }
+
+        );
+        
     }
 
     render() {

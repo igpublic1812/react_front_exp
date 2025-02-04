@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import BuildingService from '../services/BuildingService';
+import { v4 as uuidv4 } from 'uuid';
 
 class CreateBuildingComponent extends Component {
     constructor(props) {
@@ -10,15 +11,23 @@ class CreateBuildingComponent extends Component {
             id: this.props.match.params.id,
             buildingAdress: '',
             buildingZip: '',
-            emailId: ''
+            emailId: '',
+            data:[]
+
         }
         this.changeBuildingAdressHandler = this.changeBuildingAdressHandler.bind(this);
         this.changeZip = this.changeZip.bind(this);
         this.saveOrUpdateBuilding = this.saveOrUpdateBuilding.bind(this);
+        this.addItem=this.addItem.bind(this);
     }
 
     // step 3
     componentDidMount(){
+        const { state } = this.props.location;
+        this.setState(
+            {               data:state
+            });
+         console.log (JSON.stringify(state));
 
         // step 4
         if(this.state.id === '_add'){
@@ -41,9 +50,18 @@ class CreateBuildingComponent extends Component {
 
         // step 5
         if(this.state.id === '_add'){
+            /*
             BuildingService.createBuilding(Building).then(res =>{
                 this.props.history.push('/Buildings');
             });
+            */
+            ;
+            console.log ("from state new list:"+JSON.stringify(this.addItem()));
+            this.props.history.push({
+                pathname:'/buildings',
+                state: this.addItem()
+            })
+            ;
         }else{
             BuildingService.updateBuilding(Building, this.state.id).then( res => {
                 this.props.history.push('/Buildings');
@@ -51,12 +69,29 @@ class CreateBuildingComponent extends Component {
         }
     }
     
+    addItem = () => {
+        //const items =this.state.data;
+        //const newId = items.length > 0 ? Math.max(...items.map(item => item.id)) + 1 : 1;
+        
+        const newItem = { id: uuidv4(), buildingAdress: this.state.buildingAdress, 
+            buildingZip: this.state.buildingZip, 
+            emailId: this.state.emailId };
+    
+        // Update the state immutably using the spread operator
+        let newList=[...this.state.data, newItem];
+         console.log("new list:"+JSON.stringify(newList));
+
+        this.setState({data:newList});
+        return newList;
+      };
+
     changeBuildingAdressHandler= (event) => {
-        this.setState({BuildingAdress: event.target.value});
+       // console.log( event.target.value);
+        this.setState({buildingAdress: event.target.value});
     }
 
     changeZip= (event) => {
-        this.setState({lastName: event.target.value});
+        this.setState({buildingZip: event.target.value});
     }
 
     changeEmailHandler= (event) => {
