@@ -12,6 +12,9 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.3.4",
     "react-scripts": "^5.0.1",
+    "react-validation": "^3.0.7",
+    "uuid": "^11.0.5",
+    "validator": "^13.12.0",
     "webpack": "^5.97.1"
   },
   "scripts": {

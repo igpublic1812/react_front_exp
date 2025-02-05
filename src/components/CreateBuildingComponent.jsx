@@ -89,8 +89,10 @@ isValidBld=() =>{
                 this.props.history.push('/Buildings');
             });
             */
-            ;
-            if (this.validateEmail(e) && this.isValidBld()) {
+            let validEmail=this.validateEmail(e) 
+            let validBld= this.isValidBld();
+
+            if (validEmail && validBld) {
             console.log ("from state new list:"+JSON.stringify(this.addItem()));
             this.props.history.push({
                 pathname:'/buildings',
