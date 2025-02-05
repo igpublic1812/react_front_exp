@@ -41,7 +41,7 @@ class ListBuildingComponent extends Component {
         this.props.history.push(
             {
             pathname:`/update-building/${id}`,
-            state: this.data
+            state: this.state.buildings
         }
 
 
@@ -51,10 +51,13 @@ class ListBuildingComponent extends Component {
     componentDidMount(){
         this.setState({ buildings: this.data});
         const { state } = this.props.location;
-        
+
         if (state) {
         this.setState({ buildings: state});
+        //this.setState({ data: state});
         }
+        console.log("componentDidMount data=>"+JSON.stringify(this.state.data));
+        console.log("componentDidMount buildings=>"+JSON.stringify(this.state.buildings))
         /*
         BuildingService.getBuildings().then((res) => {
             this.setState({ buildings: res.data});

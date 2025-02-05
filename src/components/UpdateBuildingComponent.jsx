@@ -107,12 +107,12 @@ class UpdateBuildingComponent extends Component {
                                 <div className = "card-body">
                                     <form>
                                         <div className = "form-group">
-                                            <label> First Name: </label>
+                                            <label> Building Adress: </label>
                                             <input placeholder="Building Adress" name="buildingAdress" className="form-control" 
                                                 value={this.state.buildingAdress} onChange={this.changeBuildingAdressHandler}/>
                                         </div>
                                         <div className = "form-group">
-                                            <label> Last Name: </label>
+                                            <label> Building Zip: </label>
                                             <input placeholder="Building Zip" name="buildingZip" className="form-control" 
                                                 value={this.state.lastName} onChange={this.changeBuildinZipHandler}/>
                                         </div>
