@@ -8,7 +8,6 @@ import HeaderComponent from './components/HeaderComponent';
 import FooterComponent from './components/FooterComponent';
 import CreateBuildingComponent from './components/CreateBuildingComponent';
 import UpdateBuildingComponent from './components/UpdateBuildingComponent';
-
 import ViewBuildingComponent from './components/ViewBuildingComponent';
 import {data} from './data/data.js'
 function App() {

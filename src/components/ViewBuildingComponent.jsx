@@ -4,7 +4,7 @@ import BuildingService from '../services/BuildingService'
 class ViewBuildingComponent extends Component {
     constructor(props) {
         super(props)
-
+         
         this.state = {
             id: this.props.match.params.id,
             building: {id : 0, buildingAdress : '', buildingZip : '', emailId: ''},
@@ -16,7 +16,13 @@ class ViewBuildingComponent extends Component {
         
     }
     cancel(){
-        this.props.history.push('/buildings');
+       
+
+        this.props.history.push({
+            pathname:'/buildings',
+            state: this.state.data 
+        })
+
     }
     componentDidMount(){
         /*
@@ -31,7 +37,7 @@ class ViewBuildingComponent extends Component {
         const editBld=state.find(obj => obj.id+"" === this.state.id);
         //const editBld=this.state.data.find(obj => obj.id+"" === this.state.id);
         console.log(editBld);
-        this.setState({building :editBld});
+        this.setState({building :editBld,data:state});
              
 
     }

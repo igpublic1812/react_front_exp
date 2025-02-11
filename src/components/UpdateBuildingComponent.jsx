@@ -91,10 +91,15 @@ class UpdateBuildingComponent extends Component {
         this.setState({emailId: event.target.value});
     }
 
+   
     cancel(){
-        this.props.history.push('/buildings');
-    }
+        this.props.history.push({
+            pathname:'/buildings',
+            state: this.state.data 
+        })
 
+    }
+   
 
     render() {
         return (

@@ -1,89 +1,97 @@
-import React, { Component } from 'react'
+import React, { useState,useEffect } from 'react'
 import BuildingService from '../services/BuildingService'
 import {data} from '../data/data'
+import UtilService from '../services/UtilService'
+//import ConfirmationDialog from './ConfirmationDialog';
+import ConfirmationDialog from './ConfirmationDialog';
 
-class ListBuildingComponent extends Component {
-    constructor(props) {
-        super(props)
+const  ListBuildingComponent =(props) => {
 
-        this.state = {
-                buildings: []
+const [buildings, setBuildings]=useState([]) ;
+const [isDeleteDialogOpen, setDeleteDialogOpen]=useState(false) ;
+const [itemToDeleteId, setItemToDeleteId]=useState(null) ;
+
+  
+    const  handleDeleteClick = (id) => {
+        setItemToDeleteId(id);
+        setDeleteDialogOpen(true);
+      };
+    
+      const  handleCancelDelete = () => {
+        setDeleteDialogOpen(false);
+        setItemToDeleteId(null);
+      };
+   
+      const  deleteBuilding=(id)=>{
+        const buildingsUpd= buildings.filter(
+            building => building.id !== id);
+            setBuildings(buildingsUpd);
+                
         }
-        this.addBuilding = this.addBuilding.bind(this);
-        this.editBuilding = this.editBuilding.bind(this);
-        this.deleteBuilding = this.deleteBuilding.bind(this);
-        this.data=(data);
-        //this.data=[{id : 2, buildingAdress : 'Building adress 1', buildingZip : '22001', emailId: 'emailbld1'}, {id : 3, buildingAdress : 'Building2 adress 2', buildingZip : '22002', emailId :'emailbld2'}];
+      const   handleConfirmDelete = () => {
+        const id=itemToDeleteId;
+        setItemToDeleteId(id);
 
-    }
-
-    deleteBuilding(id){
-        /* 
-        BuildingService.deleteBuilding(id).then( res => {
-            this.setState({buildings: this.state.buildings.filter(
-                building => building.id !== id)});
-        });
-        */
-        {
-            this.setState({buildings: this.state.buildings.filter(
-                building => building.id !== id)});
-        }    
-    }
-    viewBuilding(id){
-        this.props.history.push( {
+        deleteBuilding(id);
+         // Perform delete operation using itemToDeleteId
+        console.log(`Deleting item with ID: ${itemToDeleteId}`);
+        setDeleteDialogOpen(false);
+        setItemToDeleteId(null);
+      };
+   
+   const viewBuilding=(id)=>{
+        props.history.push( {
             pathname: `/view-building/${id}`,
-            state: this.data
+            state: buildings
         }
         );
 
     }
-    editBuilding(id){
-        this.props.history.push(
+    const editBuilding =(id)=>{
+        props.history.push(
             {
             pathname:`/update-building/${id}`,
-            state: this.state.buildings
+            state: buildings
         }
 
 
         );
     }
 
-    componentDidMount(){
-        this.setState({ buildings: this.data});
-        const { state } = this.props.location;
+   const componentDidMount =()=>{
+        let  prpstate  = props.location.state;
+        console.log("prpstate=>"+JSON.stringify(prpstate));
+       
 
-        if (state) {
-        this.setState({ buildings: state});
-        //this.setState({ data: state});
+        if (prpstate) {
+        setBuildings(prpstate);        
+        console.log("componentDidMount update=>"+JSON.stringify(prpstate))
+        } else {
+        console.log("componentDidMount data=>"+JSON.stringify(data));  
+        setBuildings(data); ;
+        console.log("componentDidMount buildings=>"+JSON.stringify(buildings));
         }
-        console.log("componentDidMount data=>"+JSON.stringify(this.state.data));
-        console.log("componentDidMount buildings=>"+JSON.stringify(this.state.buildings))
-        /*
-        BuildingService.getBuildings().then((res) => {
-            this.setState({ buildings: res.data});
-            console.log(res) ;
         
-        });
-        */
     }
 
-    addBuilding(){
-        //this.props.history.push('/add-building/_add');
-        this.props.history.push(
+    const addBuilding=()=>{
+        //props.history.push('/add-building/_add');
+        
+        props.history.push(
             { pathname:'/add-building/_add',
-            state: this.data
+            state: buildings
             }
 
         );
         
     }
-
-    render() {
-        return (
+      
+   useEffect(componentDidMount,[]);
+    return (
             <div>
                  <h2 className="text-center">Buildings List</h2>
                  <div className = "row">
-                    <button className="btn btn-primary" onClick={this.addBuilding}> Add Building</button>
+                    <button className="btn btn-primary" onClick={()=>addBuilding()}> Add Building</button>
                  </div>
                  <br></br>
                  <div className = "row">
@@ -99,28 +107,37 @@ class ListBuildingComponent extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    this.state.buildings.map(
+                                    buildings.map(
                                         building => 
                                         <tr key = {building.id}>
                                              <td> { building.buildingAdress} </td>   
                                              <td> {building.buildingZip}</td>
                                              <td> {building.emailId}</td>
                                              <td>
-                                                 <button onClick={ () => this.editBuilding(building.id)} className="btn btn-info">Update </button>
-                                                 <button style={{marginLeft: "10px"}} onClick={ () => this.deleteBuilding(building.id)} className="btn btn-danger">Delete </button>
-                                                 <button style={{marginLeft: "10px"}} onClick={ () => this.viewBuilding(building.id)} className="btn btn-info">View </button>
+                                                 <button onClick={ () => editBuilding(building.id)} className="btn btn-info">Update </button>
+                                               
+                                                 <button style={{marginLeft: "10px"}} onClick={ () => handleDeleteClick(building.id)} className="btn btn-danger">Delete </button>
+                                                 
+                                                 <button style={{marginLeft: "10px"}} onClick={ () => viewBuilding(building.id)} className="btn btn-info">View </button>
                                              </td>
                                         </tr>
                                     )
                                 }
                             </tbody>
                         </table>
-
+                        <div>
+                        <ConfirmationDialog
+                                                    isOpen={isDeleteDialogOpen}
+                                                    onCancel={()=>handleCancelDelete()}
+                                                    onConfirm={()=>handleConfirmDelete(itemToDeleteId)}
+                                                    message="Are you sure you want to delete this item?"
+                        />   
+                        <button onClick={ () => UtilService.exportToExcel(buildings,"buildings.xlx")} className="btn btn-info">Download Excel File </button>
+                        </div>                     
                  </div>
 
             </div>
         )
+    
     }
-}
-
 export default ListBuildingComponent
