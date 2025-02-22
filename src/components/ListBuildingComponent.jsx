@@ -4,7 +4,7 @@ import {data} from '../data/data'
 import UtilService from '../services/UtilService'
 //import ConfirmationDialog from './ConfirmationDialog';
 import ConfirmationDialog from './ConfirmationDialog';
-
+//import ZipService from '../services/ZipService'
 const  ListBuildingComponent =(props) => {
 
 const [buildings, setBuildings]=useState([]) ;
@@ -70,12 +70,15 @@ const [itemToDeleteId, setItemToDeleteId]=useState(null) ;
         console.log("componentDidMount data=>"+JSON.stringify(data));  
         setBuildings(data); ;
         console.log("componentDidMount buildings=>"+JSON.stringify(buildings));
+       // console.log("ZipService"+JSON.stringify(ZipService.getZips()));
+
         }
         
     }
 
     const addBuilding=()=>{
         //props.history.push('/add-building/_add');
+        console.log("addBuilding=()=>"+JSON.stringify(buildings));
         
         props.history.push(
             { pathname:'/add-building/_add',
