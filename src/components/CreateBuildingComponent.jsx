@@ -1,156 +1,128 @@
-import React, { Component } from 'react'
+import React, { useState ,useEffect} from 'react'
+import { Typeahead } from 'react-bootstrap-typeahead';
 import BuildingService from '../services/BuildingService';
 import { v4 as uuidv4 } from 'uuid';
 import validator from "validator";
+import {options} from '../data/zip'
 
-class CreateBuildingComponent extends Component {
-    constructor(props) {
-        super(props)
+const CreateBuildingComponent =(props) => {
+//props.match.params.id
+    const [id,setId] =useState ("");
+    const [ buildingAdress, setBuildingAdress]=useState ( '');
+    const [ buildingZip,setBuildingZip]=useState ( '');
+    const [ emailId, setEmailId]=useState ('');
+    const [data,setData]=useState ([]);
+    const [message,setMessage]=useState ("");
+    const [bldmessage,setBldmessage]=useState ("");
         
-        this.state = {
-            // step 2
-            id: this.props.match.params.id,
-            buildingAdress: '',
-            buildingZip: '',
-            emailId: '',
-             data:[],
-             message:"",
-             bldmessage:""
-
-        }
-        this.changeBuildingAdressHandler = this.changeBuildingAdressHandler.bind(this);
-        this.changeZip = this.changeZip.bind(this);
-        this.saveOrUpdateBuilding = this.saveOrUpdateBuilding.bind(this);
-        this.addItem=this.addItem.bind(this);
-        this.validateEmail=this.validateEmail.bind(this); 
-        this.isValidBld=this.isValidBld.bind(this)
-    }
-    validateEmail = () => {
-        const email = this.state.emailId;
+    const validateEmail = () => {
+        const email = emailId;
         const isEmailValid=validator.isEmail(email);
           if (isEmailValid) {
-            this.setState({...this.state, message : ''});
+            setMessage('');
             return  true;
         } else {
-            this.setState({...this.state, message : 'Please, enter valid Email!'});
+            setMessage('Please, enter valid Email!');
           return  false;
         }
-       
-
-
       };
 
     // step 3
-    componentDidMount(){
-        const { state } = this.props.location;
-        this.setState(
-            {               data:state
-            });
+const componentDidMount=()=>{
+    console.log ("CreateBuildingComponent componentDidMount");
+         const { state } = props.location;
+        console.log (JSON.stringify(state));
+    
+        setData(state);
          console.log (JSON.stringify(state));
-
+        
         // step 4
-        if(this.state.id === '_add'){
-            return
-        }else{
-            BuildingService.getBuildingById(this.state.id).then( (res) =>{
-                let Building = res.data;
-                this.setState({buildingAdress: Building.buildingAdress,
-                    zip: Building.buildingZip,
-                    emailId : Building.emailId
-                });
-            });
-        }        
-    }
+        
+        
+};
 
-isValidBld=() =>{
-    const message=this.state.buildingAdress; 
+const isValidBld=() =>{
+    const message=buildingAdress; 
     if (message !== undefined && message !== null && message==="") {
-        this.setState({bldmessage:"Please, enter Building Adress!"})
+        setBldmessage("Please, enter Building Adress!")
         console.log(' variable is NOT undefined or null');
         return false;
     }
       else {
-        this.setState({bldmessage:""})
+        setBldmessage("")
         return true;
       }
 }
 
 
-    saveOrUpdateBuilding = (e) => {
+const saveOrUpdateBuilding = (e) => {
         e.preventDefault();
-        let Building = {buildingAdress: this.state.BuildingAdress, 
-            buildingZip: this.state.buildingZip, emailId: this.state.emailId};
+        let Building = {buildingAdress: buildingAdress, 
+            buildingZip: buildingZip, emailId: emailId};
         console.log('Building => ' + JSON.stringify(Building));
 
         // step 5
-        if(this.state.id === '_add'){
+        //if(id === '_add')
+            {
             /*
             BuildingService.createBuilding(Building).then(res =>{
-                this.props.history.push('/Buildings');
+                props.history.push('/Buildings');
             });
             */
-            let validEmail=this.validateEmail(e) 
-            let validBld= this.isValidBld();
+            let validEmail=validateEmail(e) 
+            let validBld= isValidBld();
 
             if (validEmail && validBld) {
-            console.log ("from state new list:"+JSON.stringify(this.addItem()));
-            this.props.history.push({
+            console.log ("from state new list:"+JSON.stringify(addItem()));
+            props.history.push({
                 pathname:'/buildings',
-                state: this.addItem()
+                state: addItem()
             })
-         }
-            
-            
-        
-            ;
-        }else{
-            BuildingService.updateBuilding(Building, this.state.id).then( res => {
-                this.props.history.push('/Buildings');
-            });
+         };
         }
     }
     
-    addItem = () => {
-        //const items =this.state.data;
+    const  addItem = () => {
+        //const items =state.data;
         //const newId = items.length > 0 ? Math.max(...items.map(item => item.id)) + 1 : 1;
-        
-        const newItem = { id: uuidv4(), buildingAdress: this.state.buildingAdress, 
-            buildingZip: this.state.buildingZip, 
-            emailId: this.state.emailId };
+        const newItem = { id: uuidv4(), buildingAdress: buildingAdress, 
+            buildingZip: buildingZip, 
+            emailId: emailId };
     
         // Update the state immutably using the spread operator
-        let newList=[...this.state.data, newItem];
+        let newList=[...data, newItem];
          console.log("new list:"+JSON.stringify(newList));
 
-        this.setState({data:newList});
+        setData({data:newList});
         return newList;
       };
 
-    changeBuildingAdressHandler= (event) => {
+      const changeBuildingAdressHandler= (event) => {
        // console.log( event.target.value);
-        this.setState({buildingAdress: event.target.value});
+        setBuildingAdress( event.target.value);
     }
 
-    changeZip= (event) => {
-        this.setState({buildingZip: event.target.value});
+    const changeZip= (event) => {
+        setBuildingZip( event.target.value);
     }
 
-    changeEmailHandler= (event) => {
-        this.setState({emailId: event.target.value});
+    const changeEmailHandler= (event) => {
+        setEmailId( event.target.value);
     }
 
-    cancel(){
-        this.props.history.push('/Buildings');
+    const cancel=()=>{
+        props.history.push('/Buildings');
     }
 
-    getTitle(){
-        if(this.state.id === '_add'){
+    const getTitle=()=>{
+        if(id === '_add'){
             return <h3 className="text-center">Add Building</h3>
         }else{
             return <h3 className="text-center">Update Building</h3>
         }
     }
-    render() {
+    useEffect(componentDidMount,[]);
+
         return (
             <div>
                 <br></br>
@@ -158,44 +130,49 @@ isValidBld=() =>{
                         <div className = "row">
                             <div className = "card col-md-6 offset-md-3 offset-md-3">
                                 {
-                                    this.getTitle()
+                                 getTitle()   
                                 }
                                 <div className = "card-body">
                                     <form>
                                         <div className = "form-group">
                                             <label> Building Adress: </label>
                                             <input placeholder="Building Adress" name="BuildingAdress" className="form-control" 
-                                                value={this.state.buildingAdress} onChange={this.changeBuildingAdressHandler}/>
+                                                value={buildingAdress} onChange={changeBuildingAdressHandler}/>
                                                 <span
                                                                 style={{
                                                                 fontWeight: "bold",
                                                                 color: "red"
                                                                 }}
                                                             >
-                                                    {this.state.bldmessage}
+                                                    {bldmessage}
                                                 </span>
                                         </div>
                                         <div className = "form-group">
                                             <label> Zip Code: </label>
-                                            <input placeholder="Building Zip Code" name="lastName" className="form-control" 
-                                                value={this.state.lastName} onChange={this.changeZip}/>
+                                            <Typeahead
+                                            options={options}
+                                            placeholder="zip"
+                                            selected={buildingZip}
+                                            onChange={setBuildingZip}
+                                            />                                     
                                         </div>
+                                       
                                         <div className = "form-group">
                                             <label> Email Id: </label>
                                             <input placeholder="Email Address" name="emailId" className="form-control"  
-                                                value={this.state.emailId} onChange={this.changeEmailHandler}/>
+                                                value={emailId} onChange={changeEmailHandler}/>
                                                  <span
                                                                 style={{
                                                                 fontWeight: "bold",
                                                                 color: "red"
                                                                 }}
                                                             >
-                                                    {this.state.message}
+                                                    {message}
                                                 </span>
                                         </div>
 
-                                        <button className="btn btn-success" onClick={this.saveOrUpdateBuilding}>Save</button>
-                                        <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
+                                        <button className="btn btn-success" onClick={saveOrUpdateBuilding}>Save</button>
+                                        <button className="btn btn-danger" onClick={cancel} style={{marginLeft: "10px"}}>Cancel</button>
                                     </form>
                                 </div>
                             </div>
@@ -205,6 +182,5 @@ isValidBld=() =>{
             </div>
         )
     }
-}
 
 export default CreateBuildingComponent
